@@ -24,20 +24,22 @@ void execute_instruction(CPU *cpu , Instruction instr){
         printf("Executed: ADDI R%d = R%d + %d → %d\n",
                 instr.rd, instr.rs, instr.imm, cpu->regs[instr.rd]);
         break;
+    
+        case OP_LW: // R[rd] = MEM[R[rs] + imm];
+            cpu->regs[instr.rd] = cpu->mem[cpu->regs[instr.rs] + instr.imm];
+            printf("Executed: LW R%d = MEM[R%d + %d] → %d\n",
+                    instr.rd, instr.rs, instr.imm, cpu->regs[instr.rd]);
+            break;
+
+        case OP_SW: // MEM[R[rs] + imm] = R[rd];
+        cpu->mem[cpu->regs[instr.rs] + instr.imm] = cpu ->regs[instr.rd];
+        printf("Executed: SW MEM[R%d + %d] = R%d → %d\n",
+                instr.rs, instr.imm, instr.rd, cpu->regs[instr.rd]);
+        break;
+
     default:
         printf("Error: Unknown opcode %d\n", instr.op);
         break;
     }
-
-
-
-
-
-
-
-
-
-
-
 
 }
