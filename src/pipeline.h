@@ -2,22 +2,27 @@
 #define PIPELINE_H
 
 #include "instruction.h"
-#include "cpu.h"
-
 
 typedef struct {
-    Instruction instr;   // The instruction currently in this pipeline stage
-    int pc;              // The program counter (address) of this instruction
-    int aluResult;       // The result produced by the ALU in the EX stage
-    int memData;         // Data loaded from memory (if applicable)
-    int writeReg;        // The destination register to write to during WB
+    Instruction instr;
+    int pc;
+    int aluResult;
+    int memData;
+    int writeReg;
 } PipelineStage;
 
 typedef struct {
     PipelineStage Fetch;
+    PipelineStage Decode;
     PipelineStage Execute;
     PipelineStage MemoryAccess;
     PipelineStage WriteBack;
 } Pipeline;
+
+// Forward declaration 
+struct CPU;
+
+void pipeline_step(struct CPU *cpu, Instruction program[], int program_length);
+void pipeline_run(struct CPU *cpu, Instruction program[], int program_length);
 
 #endif

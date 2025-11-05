@@ -1,28 +1,35 @@
 #include <stdio.h>
+#include "cpu.h"
 #include "pipeline.h"
+#include "cpu_execute.h" 
 
-void pipeline_step(CPU *cpu)
+void pipeline_step(struct CPU *cpu, Instruction program[], int program_length)
 {
-    // Fetch (IF)
-    printf("F Stage: Fetching instruction at PC=%d\n", cpu->pc);
-    cpu->pipeline.Fetch.instruction = cpu->mem[cpu->pc];
-    cpu->pipeline.Fetch.pc = cpu->pc;
+    if(cpu->pc < program_length) {
+        cpu->pipeline.Fetch.instr = program[cpu->pc];
+        cpu->pipeline.Fetch.pc = cpu->pc;
+    }
 
-    // Decode (ID)
-    printf("D Stage: Decoding instruction\n");
-    cpu->pipeline.Decode = cpu->pipeline.Decode;
+    
+    cpu->pipeline.Decode = cpu->pipeline.Fetch;
+    cpu->pipeline.Execute = cpu->pipeline.Decode;
+    cpu->pipeline.MemoryAccess = cpu->pipeline.Execute;
+    cpu->pipeline.WriteBack = cpu->pipeline.MemoryAccess;
 
-     // Execute (EX)
-    printf("EX Stage: Running ALU operation\n");
-    cpu->pipeline.Execute = cpu->pipeline.Execute;
+    if(cpu->pipeline.WriteBack.instr.op != -1)
+        execute_instruction(cpu, cpu->pipeline.WriteBack.instr);
 
-    // Memory Access (MEM)
-    printf("MA Stage: Access memory if needed\n");
-    cpu->pipeline.MemoryAccess = cpu->pipeline.MemoryAccess;
+    cpu->pc++;
+}
 
-    // Write Back (WB)
-    printf("WB Stage: Writing result to register %d\n",
-           cpu->pipeline.WriteBack.writeReg);
+void pipeline_run(struct CPU *cpu, Instruction program[], int program_length)
+{
+    printf("Starting program with pipeline...\n");
 
-    cpu->pc++; // advance to next instruction
+    while(cpu->pc < program_length + 4) { // +4 כדי לרוקן pipeline
+        printf("\n[Cycle %d]\n", cpu->pc);
+        pipeline_step(cpu, program, program_length);
+    }
+
+    printf("\nProgram finished!\n");
 }
