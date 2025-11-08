@@ -14,7 +14,7 @@ typedef struct CPU {
     Pipeline pipeline;
 } CPU;
 
-void cpu_init(CPU *cpu);
-void cpu_print_state(const CPU *cpu);
+void cpu_init(CPU *cpu); // Initialize CPU state
+void cpu_print_state(const CPU *cpu); // Print CPU state
 
 #endif

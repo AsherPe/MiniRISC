@@ -2,6 +2,7 @@
 #define PIPELINE_H
 
 #include "instruction.h"
+#include "cpu.h"
 
 typedef struct {
     Instruction instr;
@@ -19,10 +20,9 @@ typedef struct {
     PipelineStage WriteBack;
 } Pipeline;
 
-// Forward declaration 
-struct CPU;
 
+struct CPU; // Forward declaration
 void pipeline_step(struct CPU *cpu, Instruction program[], int program_length);
 void pipeline_run(struct CPU *cpu, Instruction program[], int program_length);
-
+void run_without_pipeline(struct CPU *cpu, Instruction program[], int program_length);
 #endif
